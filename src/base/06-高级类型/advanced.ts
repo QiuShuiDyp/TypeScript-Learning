@@ -112,9 +112,33 @@ type PickObj = Pick<Obj, 'a'>
 // 映射
 type RecordObj = Record<'x' | 'y', Obj>
 
+// 条件类型：由条件表达式决定的类型, 
+// T extends U ? X : Y
+type TypeName<T> =
+  T extends string ? "string" :
+  T extends number ? "number" :
+  T extends boolean ? "boolean" :
+  T extends undefined ? "undefined" :
+  T extends Function ? "function" :
+  "object"
 
+type T1 = TypeName<string>  //string
+type T2 = TypeName<string[]> //object
 
+// (A | B) extends U ? X : Y
+// (A extends U ? X : Y) | (B extends U ? X : Y)
+type T3 = TypeName<string | string[]>
 
-
-
-
+type Diff<T, U> = T extends U ? never : T
+type T4 = Diff<"a" | "b" | "c", "a" | "e">
+type T6 = Exclude<"a" | "b" | "c", "a" | "e">
+// 转换过程如下
+// Diff<"a","a"|"e"> | Diff<"b","a"|"e"> | Diff<"c","a"|"e">
+// never | "b" | "c"
+// "b" | "c"
+type NotNull<T> = Diff<T, undefined | null>
+type T5 = NotNull<string | number | undefined | null>
+type T7 = NonNullable<string | number | undefined | null>
+type T8 = Extract<"a" | "b" | "c", "a" | "e">
+type T9 = ReturnType<() => string>
+// Exclude<T,U>
